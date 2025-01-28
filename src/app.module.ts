@@ -4,7 +4,7 @@ import { UserModule } from './user/user.module';
 import { PostModule } from './post/post.module';
 import { CategoryModule } from './category/category.module';
 import { ConfigModule } from '@nestjs/config';
-import CoreModule from './core/core.module';
+import CommonModule from './common/common.module';
 import { NestjsFormDataModule } from 'nestjs-form-data';
 import { FileManagerModule } from './file-manager/file-manager.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
@@ -22,7 +22,7 @@ import * as path from 'path';
     }),
     MongooseModule.forRoot('mongodb://localhost:27017/posts'),
     NestjsFormDataModule,
-    CoreModule,
+    CommonModule,
     UserModule,
     PostModule,
     CategoryModule,

@@ -1,6 +1,9 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserRoleEnum } from '../enums/user-role.enum';
+import { HydratedDocument } from 'mongoose';
+
+export type UserDocument = HydratedDocument<User>;
 
 @Schema({ timestamps: true })
 export class User {
@@ -26,7 +29,6 @@ export class User {
 
   @ApiProperty({ example: UserRoleEnum.CLIENT })
   @Prop({
-    type: UserRoleEnum,
     enum: UserRoleEnum,
     default: UserRoleEnum.CLIENT,
   })

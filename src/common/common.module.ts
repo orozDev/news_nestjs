@@ -4,4 +4,4 @@ import { Module } from '@nestjs/common';
   imports: [],
   providers: [],
 })
-export default class CoreModule {}
+export default class CommonModule {}

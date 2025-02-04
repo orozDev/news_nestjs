@@ -53,9 +53,9 @@ export class CreatePostDto {
   @IsString({ each: true })
   tags: string[];
 
-  @ApiProperty({ example: '61d9cfbf17ed7311c4b3e485' })
-  @IsNotEmpty()
-  @IsMongoId()
-  @IsExisted(User.name)
-  user: User;
+  // @ApiProperty({ example: '61d9cfbf17ed7311c4b3e485' })
+  // @IsNotEmpty()
+  // @IsMongoId()
+  // @IsExisted(User.name)
+  // user: User;
 }

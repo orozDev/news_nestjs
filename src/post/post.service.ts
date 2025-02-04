@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Post } from './schemas/post.schema';
 import { FileManagerService } from '../file-manager/file-manager.service';
+import { UserEntity } from '../user/entities/user.entity';
 
 @Injectable()
 export class PostService {
@@ -13,12 +14,12 @@ export class PostService {
     private fileManagerService: FileManagerService,
   ) {}
 
-  async create(createPostDto: CreatePostDto): Promise<Post> {
+  async create(createPostDto: CreatePostDto, user: UserEntity): Promise<Post> {
     const { image, ...rest } = createPostDto;
     const temp = {
       image: await this.fileManagerService.createFile('post-images', image),
     };
-    const post = new this.postModel({ ...temp, ...rest });
+    const post = new this.postModel({ ...temp, ...rest, user: user.id });
     return post.save();
   }
 

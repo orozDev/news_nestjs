@@ -4,7 +4,6 @@ import { ConfigService } from '@nestjs/config';
 import { useContainer } from 'class-validator';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import * as path from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -29,7 +28,7 @@ async function bootstrap() {
 
   // Swagger configuration
   const swagger = new DocumentBuilder()
-    .setTitle('Holiday API backend')
+    .setTitle('Post API backend')
     .setDescription('The API description')
     .setVersion('1.0')
     .setBasePath('/api/v1')

@@ -9,16 +9,20 @@ import {
   HttpStatus,
   HttpCode,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import MongoIdDto from '../common/dto/mongo-id.dto';
 import { FormDataRequest } from 'nestjs-form-data';
 import { UserDto } from './dto/user.dto';
 import { ContextInterceptor } from '../common/interceptors/context.interceptor';
 import { StripContextPipe } from '../common/pipes/strip-context.pipe';
+import { Roles } from '../auth/decorators/roles.decorator';
+import { UserRoleEnum } from './enums/user-role.enum';
+import { RoleAuthGuard } from '../auth/guards/role-auth.guard';
 
 @ApiTags('User')
 @Controller('/users')
@@ -26,6 +30,9 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @ApiResponse({ type: UserDto })
+  @ApiBearerAuth()
+  @Roles(UserRoleEnum.ADMIN)
+  @UseGuards(RoleAuthGuard)
   @Post()
   @FormDataRequest()
   async create(@Body() createUserDto: CreateUserDto) {
@@ -34,12 +41,18 @@ export class UserController {
   }
 
   @ApiResponse({ type: [UserDto] })
+  @ApiBearerAuth()
+  @Roles(UserRoleEnum.ADMIN)
+  @UseGuards(RoleAuthGuard)
   @Get()
   async findAll() {
     const users = await this.userService.findAll();
     return UserDto.fromEntities(users);
   }
 
+  @ApiBearerAuth()
+  @Roles(UserRoleEnum.ADMIN)
+  @UseGuards(RoleAuthGuard)
   @Get(':id')
   async findOne(@Param() { id }: MongoIdDto) {
     const user = await this.userService.findOne(id);
@@ -47,6 +60,9 @@ export class UserController {
   }
 
   @ApiResponse({ type: UserDto })
+  @ApiBearerAuth()
+  @Roles(UserRoleEnum.ADMIN)
+  @UseGuards(RoleAuthGuard)
   @FormDataRequest()
   @UseInterceptors(ContextInterceptor)
   @Patch(':id')
@@ -59,6 +75,9 @@ export class UserController {
   }
 
   @ApiResponse({ type: UserDto, status: HttpStatus.NO_CONTENT })
+  @ApiBearerAuth()
+  @Roles(UserRoleEnum.ADMIN)
+  @UseGuards(RoleAuthGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   @Delete(':id')
   async remove(@Param() { id }: MongoIdDto) {

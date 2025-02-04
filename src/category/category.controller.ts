@@ -8,6 +8,7 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -15,6 +16,8 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import MongoIdDto from '../common/dto/mongo-id.dto';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Category } from './schemas/cagegory.schema';
+import { ContextInterceptor } from '../common/interceptors/context.interceptor';
+import { StripContextPipe } from '../common/pipes/strip-context.pipe';
 
 @ApiTags('Category')
 @Controller('/categories')
@@ -40,10 +43,11 @@ export class CategoryController {
   }
 
   @ApiResponse({ type: Category })
+  @UseInterceptors(ContextInterceptor)
   @Patch(':id')
   async update(
     @Param() { id }: MongoIdDto,
-    @Body() updateCategoryDto: UpdateCategoryDto,
+    @Body(StripContextPipe) updateCategoryDto: UpdateCategoryDto,
   ) {
     return await this.categoryService.update(id, updateCategoryDto);
   }

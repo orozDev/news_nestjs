@@ -8,6 +8,7 @@ import {
   Delete,
   HttpStatus,
   HttpCode,
+  UseInterceptors,
 } from '@nestjs/common';
 import { PostService } from './post.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -16,6 +17,8 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FormDataRequest } from 'nestjs-form-data';
 import MongoIdDto from '../common/dto/mongo-id.dto';
 import { Post as PostModel } from './schemas/post.schema';
+import { StripContextPipe } from '../common/pipes/strip-context.pipe';
+import { ContextInterceptor } from '../common/interceptors/context.interceptor';
 
 @ApiTags('Post')
 @Controller('/posts')
@@ -43,10 +46,11 @@ export class PostController {
 
   @ApiResponse({ type: PostModel })
   @FormDataRequest()
+  @UseInterceptors(ContextInterceptor)
   @Patch(':id')
   async update(
     @Param() { id }: MongoIdDto,
-    @Body() updatePostDto: UpdatePostDto,
+    @Body(StripContextPipe) updatePostDto: UpdatePostDto,
   ) {
     return await this.postService.update(id, updatePostDto);
   }

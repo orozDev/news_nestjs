@@ -16,6 +16,8 @@ import {
 } from 'class-validator';
 import { UserRoleEnum } from '../enums/user-role.enum';
 import { Transform } from 'class-transformer';
+import { IsUnique } from '../../common/validators/is-unique.validator';
+import { User } from '../schemas/user.schema';
 
 export class CreateUserDto {
   @IsOptional()
@@ -27,11 +29,13 @@ export class CreateUserDto {
   @ApiProperty({ example: 'oroz@gmail.com' })
   @IsNotEmpty()
   @IsEmail()
+  @IsUnique(User.name)
   email: string;
 
   @ApiProperty({ example: '+996700700700' })
   @IsNotEmpty()
   @IsPhoneNumber()
+  @IsUnique(User.name)
   phone: string;
 
   @ApiProperty({ example: 'Orozbek' })

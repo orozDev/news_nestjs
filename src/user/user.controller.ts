@@ -8,6 +8,7 @@ import {
   Delete,
   HttpStatus,
   HttpCode,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -16,6 +17,8 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import MongoIdDto from '../common/dto/mongo-id.dto';
 import { FormDataRequest } from 'nestjs-form-data';
 import { UserDto } from './dto/user.dto';
+import { ContextInterceptor } from '../common/interceptors/context.interceptor';
+import { StripContextPipe } from '../common/pipes/strip-context.pipe';
 
 @ApiTags('User')
 @Controller('/users')
@@ -45,10 +48,11 @@ export class UserController {
 
   @ApiResponse({ type: UserDto })
   @FormDataRequest()
+  @UseInterceptors(ContextInterceptor)
   @Patch(':id')
   async update(
     @Param() { id }: MongoIdDto,
-    @Body() updateUserDto: UpdateUserDto,
+    @Body(StripContextPipe) updateUserDto: UpdateUserDto,
   ) {
     const user = await this.userService.update(id, updateUserDto);
     return UserDto.fromEntity(user);

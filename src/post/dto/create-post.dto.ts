@@ -50,8 +50,7 @@ export class CreatePostDto {
   @ApiProperty({ example: ['Tag 1', 'Tag 2'] })
   @IsNotEmpty()
   @IsArray()
-  @IsMongoId({ each: true })
-  @IsExisted(Category.name, '_id', true)
+  @IsString({ each: true })
   tags: string[];
 
   @ApiProperty({ example: '61d9cfbf17ed7311c4b3e485' })

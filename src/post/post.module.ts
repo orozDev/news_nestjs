@@ -7,6 +7,7 @@ import { Category, CategorySchema } from '../category/schemas/cagegory.schema';
 import { Post, PostSchema } from './schemas/post.schema';
 import { NestjsFormDataModule } from 'nestjs-form-data';
 import { FileManagerModule } from '../file-manager/file-manager.module';
+import CommonModule from '../common/common.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { FileManagerModule } from '../file-manager/file-manager.module';
     ]),
     NestjsFormDataModule,
     FileManagerModule,
+    CommonModule,
   ],
   controllers: [PostController],
   providers: [PostService],

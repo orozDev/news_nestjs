@@ -8,11 +8,12 @@ import {
 } from 'class-validator';
 import { Model } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
+import { ModuleRef } from '@nestjs/core';
 
 @ValidatorConstraint({ async: true })
 @Injectable()
 export class IsExistedConstraint implements ValidatorConstraintInterface {
-  private moduleRef: any;
+  constructor(private readonly moduleRef: ModuleRef) {}
 
   async validate(value: any, args: ValidationArguments): Promise<boolean> {
     const [modelName, idField, many, notExisted] = args.constraints;

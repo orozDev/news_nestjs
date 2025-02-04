@@ -11,6 +11,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User } from '../user/schemas/user.schema';
 import { NestjsFormDataModule } from 'nestjs-form-data';
+import CommonModule from '../common/common.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { NestjsFormDataModule } from 'nestjs-form-data';
     }),
     PassportModule,
     UserModule,
+    CommonModule,
     NestjsFormDataModule,
   ],
   controllers: [AuthController],

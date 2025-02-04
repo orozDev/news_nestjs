@@ -8,13 +8,14 @@ import {
 } from 'class-validator';
 import { Model } from 'mongoose';
 import { getModelToken } from '@nestjs/mongoose';
+import { ModuleRef } from '@nestjs/core';
 
 @ValidatorConstraint({ async: true })
 @Injectable()
 export class IsUniqueUpdatingConstraint
   implements ValidatorConstraintInterface
 {
-  private moduleRef: any;
+  constructor(private readonly moduleRef: ModuleRef) {}
 
   async validate(value: any, args: ValidationArguments) {
     const [modelName, propertyName, idField] = args.constraints;
@@ -22,9 +23,10 @@ export class IsUniqueUpdatingConstraint
       strict: false,
     });
     if (!model) return false;
-    const entityId = (args.object as any).__context.params[idField];
+    const entityId = (args.object as any).__context.params['id'];
     const existingEntity = await model.findOne({ [propertyName]: value });
-    return !existingEntity || existingEntity[idField] === entityId;
+
+    return !existingEntity || existingEntity[idField].toString() === entityId;
   }
 
   defaultMessage(args: ValidationArguments) {

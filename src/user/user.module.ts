@@ -6,6 +6,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { FileManagerModule } from '../file-manager/file-manager.module';
 import { NestjsFormDataModule } from 'nestjs-form-data';
 import UserRepository from './repositories/user.repository';
+import CommonModule from '../common/common.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import UserRepository from './repositories/user.repository';
     ]),
     FileManagerModule,
     NestjsFormDataModule,
+    CommonModule,
   ],
   controllers: [UserController],
   providers: [UserService, UserRepository],

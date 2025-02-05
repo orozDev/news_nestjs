@@ -50,7 +50,7 @@ export class FileManagerService {
         await sharp(file.buffer)
           .webp({ effort: 5 })
           .toFile(path.resolve(filePath, webpFileName));
-        return `${directory}/${webpFileName}`;
+        return `${directory}${directory.endsWith('/') ? '' : '/'}${webpFileName}`;
       }
 
       // If it's not an image, just save it with the original extension

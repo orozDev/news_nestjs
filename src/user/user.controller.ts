@@ -10,6 +10,7 @@ import {
   HttpCode,
   UseInterceptors,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -23,6 +24,7 @@ import { StripContextPipe } from '../common/pipes/strip-context.pipe';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { UserRoleEnum } from './enums/user-role.enum';
 import { RoleAuthGuard } from '../auth/guards/role-auth.guard';
+import UsesQueryDto from './dto/uses-query.dto';
 
 @ApiTags('User')
 @Controller('/users')
@@ -30,9 +32,9 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @ApiResponse({ type: UserDto })
-  @ApiBearerAuth()
-  @Roles(UserRoleEnum.ADMIN)
-  @UseGuards(RoleAuthGuard)
+  // @ApiBearerAuth()
+  // @Roles(UserRoleEnum.ADMIN)
+  // @UseGuards(RoleAuthGuard)
   @Post()
   @FormDataRequest()
   async create(@Body() createUserDto: CreateUserDto) {
@@ -45,18 +47,17 @@ export class UserController {
   @Roles(UserRoleEnum.ADMIN)
   @UseGuards(RoleAuthGuard)
   @Get()
-  async findAll() {
-    const users = await this.userService.findAll();
-    return UserDto.fromEntities(users);
+  async findAll(@Query() usesQueryDto: UsesQueryDto) {
+    return await this.userService.findAll(usesQueryDto);
   }
 
+  @ApiResponse({ type: UserDto })
   @ApiBearerAuth()
   @Roles(UserRoleEnum.ADMIN)
   @UseGuards(RoleAuthGuard)
   @Get(':id')
   async findOne(@Param() { id }: MongoIdDto) {
-    const user = await this.userService.findOne(id);
-    return UserDto.fromEntity(user);
+    return await this.userService.findOne(id);
   }
 
   @ApiResponse({ type: UserDto })

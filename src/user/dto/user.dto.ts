@@ -1,11 +1,9 @@
 import { UserEntity } from '../entities/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserRoleEnum } from '../enums/user-role.enum';
+import BaseEntityDto from '../../common/dto/base-entity.dto';
 
-export class UserDto {
-  @ApiProperty({ example: '61d9cfbf17ed7311c4b3e485' })
-  id: string;
-
+export class UserDto extends BaseEntityDto {
   @ApiProperty({ example: '/static/avatar.png' })
   avatar: string;
 
@@ -27,10 +25,12 @@ export class UserDto {
   @ApiProperty({ example: true })
   isActive: boolean;
 
-  static fromEntity(user: UserEntity): UserDto {
+  static fromEntity(user: UserEntity, staticUrlPrefix = ''): UserDto {
     const dto = new UserDto();
     dto.id = user.id;
-    dto.avatar = user.avatar;
+    dto.avatar = user.avatar
+      ? UserDto.prepareUrl(user.avatar, staticUrlPrefix)
+      : null;
     dto.email = user.email;
     dto.phone = user.phone;
     dto.firstName = user.firstName;
@@ -41,7 +41,7 @@ export class UserDto {
     return dto;
   }
 
-  static fromEntities(users: UserEntity[]): UserDto[] {
-    return users.map((user) => UserDto.fromEntity(user));
+  static fromEntities(users: UserEntity[], staticUrlPrefix = ''): UserDto[] {
+    return users.map((user) => UserDto.fromEntity(user, staticUrlPrefix));
   }
 }

@@ -5,13 +5,14 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { AuthService } from '../auth.service';
 import { UserService } from '../../user/user.service';
 import { UserEntity } from '../../user/entities/user.entity';
+import UserRepository from '../../user/repositories/user.repository';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private config: ConfigService,
     private authService: AuthService,
-    private userService: UserService,
+    private userRepository: UserRepository,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -27,6 +28,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new ForbiddenException('The user is not active');
     }
 
-    return await this.userService.findOne(payload.sub);
+    return await this.userRepository.findById(payload.sub);
   }
 }

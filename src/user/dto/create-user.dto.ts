@@ -22,7 +22,7 @@ import { User } from '../schemas/user.schema';
 export class CreateUserDto {
   @IsOptional()
   @IsFile()
-  @MaxFileSize(1e6)
+  @MaxFileSize(5e6)
   @HasMimeType(['image/jpeg', 'image/png'])
   avatar?: MemoryStoredFile;
 

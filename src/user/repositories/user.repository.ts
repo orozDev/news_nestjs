@@ -14,6 +14,7 @@ import RepositoryException from '../../common/exceptions/repository.exception';
 import MongoErrorCode from '../../common/enums/mongo-error-code.enum';
 import LockedException from '../../common/exceptions/locked.exception';
 import * as bcryptjs from 'bcryptjs';
+import UsesQueryDto from '../dto/uses-query.dto';
 
 @Injectable()
 export default class UserRepository {
@@ -22,6 +23,29 @@ export default class UserRepository {
   async findAll(): Promise<UserEntity[]> {
     const documents = await this.model.find().exec();
     return UserMapper.toEntities(documents);
+  }
+
+  async find(
+    usesQueryDto: UsesQueryDto,
+  ): Promise<{ count: number; users: UserEntity[] }> {
+    const { page = 1, pageSize = 12, search, ...rest } = usesQueryDto;
+
+    console.log((Math.ceil(page / pageSize) - 1) * pageSize);
+
+    const queries = { ...rest };
+    if (search) queries['$text'] = { $search: search };
+
+    const documents = await this.model
+      .find(queries)
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * pageSize)
+      .limit(pageSize)
+      .exec();
+
+    const count = await this.model.countDocuments(queries).exec();
+    const users = UserMapper.toEntities(documents);
+
+    return { count, users };
   }
 
   async findById(id: string): Promise<UserEntity> {
@@ -33,7 +57,7 @@ export default class UserRepository {
     let user: UserDocument;
 
     if (data.password) {
-      data.password = await UserRepository.make_password(data.password);
+      data.password = await UserRepository.makePassword(data.password);
     }
 
     try {
@@ -66,7 +90,7 @@ export default class UserRepository {
     const user = await this.model.findOne({ _id: id }).exec();
 
     if (data?.password) {
-      data.password = await UserRepository.make_password(data.password);
+      data.password = await UserRepository.makePassword(data.password);
     }
 
     Object.assign(user, data);
@@ -112,7 +136,7 @@ export default class UserRepository {
     return UserMapper.toEntity(document);
   }
 
-  static make_password(password: string): Promise<string> {
+  static makePassword(password: string): Promise<string> {
     return bcryptjs.hash(password, 10);
   }
 
@@ -125,5 +149,13 @@ export default class UserRepository {
       .findOne(filter, projection, options)
       .exec();
     return UserMapper.toEntity(userDocument);
+  }
+
+  toEntities(documents: UserDocument[]): UserEntity[] {
+    return UserMapper.toEntities(documents);
+  }
+
+  toEntity(document: UserDocument): UserEntity {
+    return UserMapper.toEntity(document);
   }
 }

@@ -30,8 +30,6 @@ export default class UserRepository {
   ): Promise<{ count: number; users: UserEntity[] }> {
     const { page = 1, pageSize = 12, search, ...rest } = usesQueryDto;
 
-    console.log((Math.ceil(page / pageSize) - 1) * pageSize);
-
     const queries = { ...rest };
     if (search) queries['$text'] = { $search: search };
 

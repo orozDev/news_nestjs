@@ -98,10 +98,10 @@ export default class UserRepository {
   }
 
   async save(user: UserEntity): Promise<UserEntity> {
-    const userDoc = await UserMapper.fromEntity(user, this.model);
+    const document = await UserMapper.fromEntity(user, this.model);
 
     try {
-      await userDoc.save();
+      await document.save();
     } catch (error) {
       if (
         error.name === 'MongoServerError' &&
@@ -121,7 +121,7 @@ export default class UserRepository {
       throw error;
     }
 
-    return UserMapper.toEntity(userDoc);
+    return UserMapper.toEntity(document);
   }
 
   async delete(id: string): Promise<UserEntity> {
@@ -143,10 +143,10 @@ export default class UserRepository {
     projection?: ProjectionType<UserDocument> | null,
     options?: QueryOptions<UserDocument> | null,
   ): Promise<UserEntity> {
-    const userDocument = await this.model
+    const document = await this.model
       .findOne(filter, projection, options)
       .exec();
-    return UserMapper.toEntity(userDocument);
+    return UserMapper.toEntity(document);
   }
 
   toEntities(documents: UserDocument[]): UserEntity[] {

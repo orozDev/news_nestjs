@@ -1,8 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
 import { User } from '../../user/schemas/user.schema';
 import { Category } from '../../category/schemas/cagegory.schema';
 import { ApiProperty } from '@nestjs/swagger';
+
+export type PostDocument = HydratedDocument<Post>;
 
 @Schema({ timestamps: true })
 export class Post {
@@ -28,7 +30,7 @@ export class Post {
 
   @ApiProperty({ example: '61d9cfbf17ed7311c4b3e485' })
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Category' })
-  category: Category;
+  category: Category | mongoose.Types.ObjectId;
 
   @ApiProperty({ example: ['Tag 1', 'Tag 2'] })
   @Prop({ type: [String], default: [] })
@@ -36,7 +38,7 @@ export class Post {
 
   @ApiProperty({ example: '61d9cfbf17ed7311c4b3e485' })
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
-  user: User;
+  user: User | mongoose.Types.ObjectId;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Post);
